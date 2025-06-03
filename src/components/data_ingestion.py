@@ -9,6 +9,9 @@ from dataclasses import dataclass
 
 from src.components.data_tranformation import DataTransformation
 from src.components.data_tranformation import DataTransformationConfig
+from src.components.model_training import ModelTrainer
+from src.components.model_training import ModelTrainerConfig
+
 
 @dataclass
 class DataIngestionConfig:
@@ -35,7 +38,7 @@ class DataIngestion:
             train_set, test_set = train_test_split(df, test_size=0.2, random_state=42)
 
             train_set.to_csv(self.ingestion_config.train_data_path, index=False, header=True)
-            test_set.to_csv(self.ingestion_config.test_data_path, index=False, header=True)  # <- fixed line
+            test_set.to_csv(self.ingestion_config.test_data_path, index=False, header=True)  
 
             logging.info('Ingestion of the data is completed')
 
@@ -56,4 +59,9 @@ if __name__ == "__main__":
 
 
     data_transformation  = DataTransformation()
-    data_transformation.initiate_data_transformation(train_data , test_data)
+    train_arr , test_arr ,_ = data_transformation.initiate_data_transformation(train_data , test_data)
+
+    modeltrainer = ModelTrainer()
+    r2_square = modeltrainer.initiate_model_trainer(train_arr , test_arr)
+
+    print(f"\n Final R² Score of Best Model: {r2_square:.4f}\n")  # Display the R² value
